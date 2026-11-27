@@ -9,3 +9,6 @@ class Length(unittest.TestCase):
 
     def test_round_trip(self):
         self.assertAlmostEqual(length.km_to_miles(length.miles_to_km(3)), 3)
+
+    def test_km_to_metres_of_nothing(self):
+        self.assertEqual(length.km_to_metres(0), 0)

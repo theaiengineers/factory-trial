@@ -11,4 +11,4 @@ class Length(unittest.TestCase):
         self.assertAlmostEqual(length.km_to_miles(length.miles_to_km(3)), 3)
 
     def test_km_to_metres(self):
-        self.assertEqual(length.km_to_metres(1.5), 1500)
+        self.assertAlmostEqual(length.km_to_metres(1.5), 1500)

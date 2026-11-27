@@ -1,0 +1,34 @@
+# Starter workflow for the reviewer health check. Copy it to `.github/workflows/factory-reviewer-health.yml` in your
+# repository if you use the automatic reviewer. Once a month it checks that the reviewer can still reach its model and
+# opens an issue when it cannot, so an expired credential is not found out by accident:
+#   https://github.com/theaiengineers/factory/blob/main/docs/AUTOMATIC_REVIEWER.md#when-the-credential-stops-working
+#
+# Replace the placeholder after `@` and after `factory_ref:` (the same value, in BOTH places) with the full
+# 40-character commit id of the factory version you are adopting: v0.4.0 or later. Use the same one as your gate.
+#
+# Pass the same model secret your reviewer workflow uses. Keep the line below that matches and delete the other.
+# If your reviewer workflow sets `model`, set the same `model` under `with:` here, so the check asks the same one.
+#
+# Issues must be switched on for the repository. GitHub stops scheduled workflows in a public repository that has had
+# no activity for 60 days, and says so by email; switch it back on from the Actions tab.
+
+name: factory-reviewer-health
+
+on:
+  schedule:
+    - cron: "23 7 1 * *"     # 07:23 UTC on the first of each month. Weekly is fine too: "23 7 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  health:
+    permissions:
+      contents: read
+      issues: write
+    uses: theaiengineers/factory/.github/workflows/reviewer-health.yml@11a0c25b99046cce5f1c56fb764f9a7b03e17303
+    with:
+      factory_ref: 11a0c25b99046cce5f1c56fb764f9a7b03e17303
+    secrets:
+      claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}

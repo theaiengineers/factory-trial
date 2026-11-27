@@ -1,0 +1,51 @@
+# Starter workflow for the automatic reviewer. Copy it to `.github/workflows/factory-reviewer.yml` in your repository.
+# How to set it up, what it can and cannot do, and what it costs:
+#   https://github.com/theaiengineers/factory/blob/main/docs/AUTOMATIC_REVIEWER.md
+#
+# Replace the placeholder after `@` and after `factory_ref:` (the same value, in BOTH places) with the full
+# 40-character commit id of the factory version you are adopting: v0.3.0 or later. Use the same one as your gate.
+#
+# It also needs three things outside this file:
+#   1. In factory.yml, under the independent-review station:
+#        automatic:
+#          account: github-actions[bot]
+#   2. A repository secret FACTORY_REVIEWER_KEY, a long random value that signs the reviewer's records:
+#        openssl rand -hex 32 | gh secret set FACTORY_REVIEWER_KEY
+#      and the same secret passed to your gate workflow (see starter/factory-gate.yml).
+#   3. One repository secret for the model: CLAUDE_CODE_OAUTH_TOKEN (a Claude subscription, from
+#      `claude setup-token`) or ANTHROPIC_API_KEY. Keep the line below that matches and delete the other.
+
+name: factory-reviewer
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+  # To start a review by hand: of an outside contribution, or again after a check was re-run.
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number
+        required: true
+      force:
+        description: Review even though the author cannot write to this repository
+        type: boolean
+        default: false
+
+permissions: {}
+
+jobs:
+  review:
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+      checks: read
+    uses: theaiengineers/factory/.github/workflows/reviewer.yml@11a0c25b99046cce5f1c56fb764f9a7b03e17303
+    with:
+      factory_ref: 11a0c25b99046cce5f1c56fb764f9a7b03e17303
+      pr: ${{ inputs.pr }}
+      force: ${{ inputs.force || false }}
+    secrets:
+      reviewer_key: ${{ secrets.FACTORY_REVIEWER_KEY }}
+      claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}

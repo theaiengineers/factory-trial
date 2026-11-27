@@ -20,6 +20,9 @@ intake:
     uses: independent-review
     standard: docs/REVIEW_STANDARD.md
     skip_when_only: ["**/*.md"]
+    automatic:
+      account: github-actions[bot]
+      passes: [code]            # the default: a high-risk change still needs a person
 
 # What needs extra care, and why. The `why` is shown to the reviewer:
 # it says what goes wrong for a real person if this code is wrong.

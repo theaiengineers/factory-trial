@@ -1,0 +1,29 @@
+# Factory file for stage 1: tests, then an independent review.
+# What each key means: https://github.com/theaiengineers/factory/blob/main/spec/factory-file.md
+# How to fill it in:   https://github.com/theaiengineers/factory/blob/main/docs/SETUP.md
+
+spec: factory/0.1
+factory: theaiengineers
+building: theaiengineers/factory-trial
+branch: main
+
+intake:
+  # The checks that must pass before a change can merge. Use the exact names GitHub shows on a pull request.
+  # The gate does not enforce this list yet: the same names are required in the branch settings (SETUP.md, step 8).
+  - station: testing
+    uses: checks
+    require: [tests]
+
+  # The independent review. A change that touches only these paths needs no review.
+  # Start narrow. Every path you add here is a path nobody has to look at.
+  - station: qa
+    uses: independent-review
+    standard: docs/REVIEW_STANDARD.md
+    skip_when_only: ["**/*.md"]
+
+# What needs extra care, and why. The `why` is shown to the reviewer:
+# it says what goes wrong for a real person if this code is wrong.
+risk:
+  - area: workflows
+    why: run the tests and the review gate that every change is judged by; a mistake lets an untested or unreviewed change merge
+    paths: [.github/workflows/**]

@@ -1,0 +1,35 @@
+# Starter workflow for stage 1. Copy it to `.github/workflows/factory-gate.yml` in your repository.
+#
+# Replace the placeholder after `@` and after `factory_ref:` (the same value, in BOTH places) with the full
+# 40-character commit id of the factory version you are adopting: v0.2.0 or later. To find the newest one:
+#
+#   git ls-remote --tags --sort=-v:refname https://github.com/theaiengineers/factory | head -2
+#
+# and take the id on the line that ends `^{}`. Use a commit id, not a tag name: a tag can be moved, a commit cannot.
+#
+# This workflow only starts running once it is on your default branch. It never checks out or runs the code in a
+# pull request: it reads the list of changed files and the comments, and sets one status on the head commit.
+
+name: factory-gate
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+  issue_comment:
+    types: [created, edited, deleted]
+
+permissions:
+  statuses: write
+  pull-requests: read
+  contents: read
+
+jobs:
+  gate:
+    uses: theaiengineers/factory/.github/workflows/review-gate.yml@11a0c25b99046cce5f1c56fb764f9a7b03e17303
+    with:
+      factory_ref: 11a0c25b99046cce5f1c56fb764f9a7b03e17303
+      # To try the gate beside a review rule you already enforce, give its status another name:
+      # context: independent-review-trial
+    # Only if you use the automatic reviewer (v0.3.0 or later): the key its records are signed with.
+    # secrets:
+    #   reviewer_key: ${{ secrets.FACTORY_REVIEWER_KEY }}

@@ -31,5 +31,5 @@ jobs:
       # To try the gate beside a review rule you already enforce, give its status another name:
       # context: independent-review-trial
     # Only if you use the automatic reviewer (v0.3.0 or later): the key its records are signed with.
-    # secrets:
-    #   reviewer_key: ${{ secrets.FACTORY_REVIEWER_KEY }}
+    secrets:
+      reviewer_key: ${{ secrets.FACTORY_REVIEWER_KEY }}

@@ -25,9 +25,9 @@ permissions:
 
 jobs:
   gate:
-    uses: theaiengineers/factory/.github/workflows/review-gate.yml@11a0c25b99046cce5f1c56fb764f9a7b03e17303
+    uses: theaiengineers/factory/.github/workflows/review-gate.yml@961038c950b73472381abbdd92dd35c8139a5634
     with:
-      factory_ref: 11a0c25b99046cce5f1c56fb764f9a7b03e17303
+      factory_ref: 961038c950b73472381abbdd92dd35c8139a5634
       # To try the gate beside a review rule you already enforce, give its status another name:
       # context: independent-review-trial
     # Only if you use the automatic reviewer (v0.3.0 or later): the key its records are signed with.

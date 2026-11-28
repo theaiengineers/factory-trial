@@ -11,24 +11,28 @@ import json
 import re
 import sys
 
-REMOVED_TEST = re.compile(r"^-\s*def test_\w+", re.MULTILINE)
+REMOVED_TEST = re.compile(r"^-\s*(?:async\s+)?def test_\w+", re.MULTILINE)
 
 
 def classify(files):
     reasons, code = [], []
     for f in files:
-        name = f.get("filename") or ""
-        if name.endswith(".md"):
+        # A renamed file is judged under both its names: moving a workflow or a test away, or calling it prose,
+        # changes the place it left.
+        names = [n for n in (f.get("filename"), f.get("previous_filename")) if isinstance(n, str) and n]
+        if names and all(n.endswith(".md") for n in names):
             continue
-        code.append(name)
-        if name.startswith(".github/workflows/"):
-            reasons.append({"area": "workflows", "file": name, "rule": ".github/workflows/",
-                            "why": "run the tests and the review gate that every change is judged by"})
-        elif name.startswith("tests/"):
-            patch = f.get("patch")
-            if f.get("status") == "removed" or patch is None or REMOVED_TEST.search(patch):
-                reasons.append({"area": "tests removed", "file": name, "rule": "a test is removed, or the diff cannot be read",
-                                "why": "a removed test stops guarding what it guarded, with nothing failing"})
+        code.append(f.get("filename") or names[0])
+        for name in names:
+            if name.startswith(".github/workflows/"):
+                reasons.append({"area": "workflows", "file": name, "rule": ".github/workflows/",
+                                "why": "run the tests and the review gate that every change is judged by"})
+            elif name.startswith("tests/"):
+                patch = f.get("patch")
+                gone = f.get("status") == "removed" or name != f.get("filename")
+                if gone or patch is None or REMOVED_TEST.search(patch):
+                    reasons.append({"area": "tests removed", "file": name, "rule": "a test is removed or moved, or the diff cannot be read",
+                                    "why": "a removed test stops guarding what it guarded, with nothing failing"})
     return {"review": "high" if reasons else "code" if code else "none", "reasons": reasons, "code": code}
 
 

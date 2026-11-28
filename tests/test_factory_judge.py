@@ -20,6 +20,21 @@ class Judge(unittest.TestCase):
         self.assertEqual(self.level(filename="tests/test_length.py", status="removed"), "high")
         self.assertEqual(self.level(filename="tests/test_length.py"), "high")       # no diff to read
 
+    def test_a_rename_is_judged_under_both_names(self):
+        for new, old, want in ((".github/workflows/tests.md", ".github/workflows/tests.yml", "high"), ("ci/tests.yml", ".github/workflows/tests.yml", "high"),
+                               ("tests/test_length.md", "tests/test_length.py", "high"), ("old/test_length.py", "tests/test_length.py", "high"),
+                               ("units/length.md", "units/length.py", "code"), ("docs/b.md", "docs/a.md", "none")):
+            self.assertEqual(self.level(filename=new, previous_filename=old, status="renamed", patch=""), want, (new, old))
+
+    def test_it_runs_as_the_gate_runs_it(self):
+        import json, subprocess, sys
+        script = pathlib.Path(__file__).parent.parent / "scripts" / "factory_judge.py"
+        asked = json.dumps({"factory_judge": 1, "files": [{"filename": ".github/workflows/tests.yml", "status": "modified", "patch": "+x"}]})
+        done = subprocess.run([sys.executable, str(script)], input=asked, capture_output=True, text=True)
+        answer = json.loads(done.stdout)
+        self.assertEqual((done.returncode, answer["review"], answer["reasons"][0]["area"]), (0, "high", "workflows"))
+        self.assertNotEqual(subprocess.run([sys.executable, str(script)], input="{}", capture_output=True, text=True).returncode, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

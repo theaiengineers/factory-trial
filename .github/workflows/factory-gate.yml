@@ -1,7 +1,7 @@
 # Starter workflow for stage 1. Copy it to `.github/workflows/factory-gate.yml` in your repository.
 #
 # Replace the placeholder after `@` and after `factory_ref:` (the same value, in BOTH places) with the full
-# 40-character commit id of the factory version you are adopting: v0.2.0 or later. To find the newest one:
+# 40-character commit id of the factory version you are adopting: v0.8.0 or later. To find the newest one:
 #
 #   git ls-remote --tags --sort=-v:refname https://github.com/theaiengineers/factory | head -2
 #

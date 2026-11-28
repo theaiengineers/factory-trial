@@ -26,9 +26,9 @@ jobs:
     permissions:
       contents: read
       issues: write
-    uses: theaiengineers/factory/.github/workflows/reviewer-health.yml@11a0c25b99046cce5f1c56fb764f9a7b03e17303
+    uses: theaiengineers/factory/.github/workflows/reviewer-health.yml@961038c950b73472381abbdd92dd35c8139a5634
     with:
-      factory_ref: 11a0c25b99046cce5f1c56fb764f9a7b03e17303
+      factory_ref: 961038c950b73472381abbdd92dd35c8139a5634
     secrets:
       claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}

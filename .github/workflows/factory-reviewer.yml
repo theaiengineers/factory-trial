@@ -40,9 +40,9 @@ jobs:
       pull-requests: write
       statuses: write
       checks: read
-    uses: theaiengineers/factory/.github/workflows/reviewer.yml@11a0c25b99046cce5f1c56fb764f9a7b03e17303
+    uses: theaiengineers/factory/.github/workflows/reviewer.yml@961038c950b73472381abbdd92dd35c8139a5634
     with:
-      factory_ref: 11a0c25b99046cce5f1c56fb764f9a7b03e17303
+      factory_ref: 961038c950b73472381abbdd92dd35c8139a5634
       pr: ${{ inputs.pr }}
       force: ${{ inputs.force || false }}
     secrets:

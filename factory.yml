@@ -20,6 +20,11 @@ intake:
     uses: independent-review
     standard: docs/REVIEW_STANDARD.md
     skip_when_only: ["**/*.md"]
+    never_skip: ["**/AGENTS.md"]
+    # This repository's own rules decide the level of each change (factory v0.8.0 or later). The lists here are kept
+    # for anything still on an earlier version.
+    judge:
+      run: scripts/factory_judge.py
     automatic:
       account: github-actions[bot]
       passes: [code]            # the default: a high-risk change still needs a person
